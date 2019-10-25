@@ -107,6 +107,17 @@
     [bookmarkViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
+- (void)presentViewController:(UIViewController *)viewControllerToPresent animated:(BOOL)flag completion:(void (^)(void))completion
+{
+    if ([viewControllerToPresent isKindOfClass:[UINavigationController class]]) {
+        UINavigationController *navController = (UINavigationController *)viewControllerToPresent;
+        if ([navController.viewControllers.firstObject isKindOfClass:[PTFloatingSigViewController class]]) {
+            viewControllerToPresent.modalPresentationStyle = UIModalPresentationFullScreen;
+        }
+    }
+    [super presentViewController:viewControllerToPresent animated:flag completion:completion];
+}
+
 @end
 
 @interface RNTPTDocumentView () <RNTPTDocumentViewControllerDelegate>
