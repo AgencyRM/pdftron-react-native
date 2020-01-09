@@ -40,6 +40,20 @@ RCT_REMAP_METHOD(setToolMode,
 
 #pragma mark - Methods (w/ promises)
 
+RCT_REMAP_METHOD(getFormContents,
+                 getFormContentsForDocumentViewTag:(nonnull NSNumber *)tag
+                 resolver:(RCTPromiseResolveBlock)resolve
+                 rejecter:(RCTPromiseRejectBlock)reject)
+{
+    @try {
+        NSDictionary * formContents = [[self documentViewManager] getFormContentsForDocumentViewTag:tag];
+        resolve(formContents);
+    }
+    @catch(NSException *exception) {
+        reject(@"export_failed", @"Failed to get form contents", [self errorFromException:exception]);
+    }
+}                 
+
 RCT_REMAP_METHOD(getPageCount,
                  getPageCountForDocumentViewTag:(nonnull NSNumber *)tag
                  resolver:(RCTPromiseResolveBlock)resolve

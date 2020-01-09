@@ -182,6 +182,15 @@ public class DocumentViewViewManager extends ViewGroupManager<DocumentView> {
         }
     }
 
+    public ReadableMap getFormContents(int tag) throws PDFNetException {
+        DocumentView documentView = mDocumentViews.get(tag);
+        if (documentView != null) {
+            return documentView.getFormContents();
+        } else {
+            throw new PDFNetException("", 0L, getName(), "getFormContents", "Unable to find DocumentView.");
+        }
+    }
+
     public int getPageCount(int tag) throws PDFNetException {
         DocumentView documentView = mDocumentViews.get(tag);
         if (documentView != null) {

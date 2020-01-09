@@ -20,6 +20,8 @@ import com.facebook.react.uimanager.events.RCTEventEmitter;
 import com.pdftron.common.PDFNetException;
 import com.pdftron.fdf.FDFDoc;
 import com.pdftron.pdf.Annot;
+import com.pdftron.pdf.Field;
+import com.pdftron.pdf.FieldIterator;
 import com.pdftron.pdf.PDFDoc;
 import com.pdftron.pdf.PDFViewCtrl;
 import com.pdftron.pdf.config.PDFViewCtrlConfig;
@@ -671,6 +673,30 @@ public class DocumentView extends com.pdftron.pdf.controls.DocumentView {
                 pdfViewCtrl.docUnlock();
             }
         }
+    }
+
+    public ReadableMap getFormContents() throws PDFNetException {
+        WritableMap contents = Arguments.createMap();
+        PDFDoc doc = getPdfDoc();
+
+        for (FieldIterator itr = doc.getFieldIterator(); itr.hasNext(); ) {
+            Field current = itr.next();
+            String fieldName = current.getName();
+
+            int type = current.getType();
+            switch (type) {
+                case Field.e_text:
+                case Field.e_radio:
+                case Field.e_choice:
+                    contents.putString(fieldName, current.getValueAsString());
+                    break;
+                case Field.e_check:
+                    contents.putBoolean(fieldName, current.getValueAsBool());
+                    break;
+            }
+        }
+
+        return contents;
     }
 
     public int getPageCount() throws PDFNetException {

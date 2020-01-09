@@ -239,6 +239,39 @@ RCT_CUSTOM_VIEW_PROPERTY(annotationAuthor, NSString, RNTPTDocumentView)
     }
 }
 
+- (NSDictionary *)getFormContentsForDocumentViewTag:(NSNumber *)tag
+{
+    RNTPTDocumentView *documentView = self.documentViews[tag];
+    if (documentView) {
+        PTPDFDoc *fdfDoc = [documentView.documentViewController.pdfViewCtrl GetDoc];
+        NSMutableDictionary *dict =  [[NSMutableDictionary alloc] init];
+
+        PTFieldIterator * itr;
+            for(itr = [fdfDoc GetFieldIterator]; [itr HasNext]; [itr Next]) 
+            {
+                NSString * fieldName = [[itr Current] GetName];
+                int type = [[itr Current] GetType];
+
+                switch(type)
+                {
+                case e_pttext:
+                case e_ptradio:
+                case e_ptchoice:
+                    dict[fieldName] = [[itr Current] GetValueAsString];
+                    break;
+                case e_ptcheck:
+                    dict[fieldName] = @([[itr Current] GetValueAsBool]);
+                    break;
+                }
+            }
+        
+        return dict;
+    } else {
+        @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"Unable to find DocumentView for tag" userInfo:nil];
+        return nil;
+    }
+}
+
 - (int)getPageCountForDocumentViewTag:(NSNumber *)tag
 {
     RNTPTDocumentView *documentView = self.documentViews[tag];

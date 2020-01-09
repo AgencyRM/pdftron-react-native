@@ -99,6 +99,21 @@ public class DocumentViewModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void getFormContents(final int tag, final Promise promise) {
+        getReactApplicationContext().runOnUiQueueThread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    ReadableMap contents = mDocumentViewInstance.getFormContents(tag);
+                    promise.resolve(contents);
+                } catch (Exception ex) {
+                    promise.reject(ex);
+                }
+            }
+        });
+    }
+
+    @ReactMethod
     public void getPageCount(final int tag, final Promise promise) {
         getReactApplicationContext().runOnUiQueueThread(new Runnable() {
             @Override
